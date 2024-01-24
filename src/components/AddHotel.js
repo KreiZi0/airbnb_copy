@@ -1,26 +1,46 @@
 import React, { useState } from 'react';
+import { ref, set } from 'firebase/database';
+import { database } from '../firebase';
+import '../styles/AddHotel.css';
 
 const AddHotel = () => {
   const [hotelName, setHotelName] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    // Handle the submission of hotel information (e.g., send it to the server)
-    // You can perform any necessary actions with the collected data
-
-    // Clear the form fields after submission
+  const clearFormFields = () => {
     setHotelName('');
     setAddress('');
     setDescription('');
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const hotelsRef = ref(database, 'hotels');
+
+    try {
+      const newHotel = {
+        name: hotelName,
+        address: address,
+        description: description,
+      };
+
+      await set(hotelsRef, newHotel);
+
+      // Clear the form fields after successful submission
+      clearFormFields();
+
+      console.log('Hotel added successfully!');
+    } catch (error) {
+      console.error('Error adding hotel:', error.message);
+    }
+  };
+
   return (
     <div>
-      <h3>Add Hotel</h3>
-      <form onSubmit={handleSubmit}>
+      <h3 class="header" >Add Hotel</h3>
+      <form className="add-hotel-container" onSubmit={handleSubmit}>
         <label htmlFor="hotelName">Hotel Name:</label>
         <input
           type="text"
