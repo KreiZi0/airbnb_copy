@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Login from '../components/Login';
 import Register from '../components/Register';
-import { auth } from '../firebase'; // Import the Firebase objects
+import { auth } from '../firebase';
 import '../styles/Home.css';
 
 const Home = () => {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false); // State for success message
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+    });
+
+    // Cleanup the listener on component unmount
+    return () => unsubscribe();
+  }, []);
 
   const openLoginModal = () => {
     setLoginModalOpen(true);
@@ -26,29 +37,31 @@ const Home = () => {
   };
 
   const handleLogin = (credentials) => {
-    // Implement your login logic here using 'credentials'
     console.log('Login credentials:', credentials);
   };
 
   const handleLogout = () => {
-    // Implement logout logic
-    // For now, just sign out the user
-    auth.signOut();
+    console.log('Logout button clicked');
+    auth.signOut()
+      .then(() => {
+        console.log('User logged out successfully.');
+      })
+      .catch((error) => {
+        console.error('Error during logout:', error.message);
+      });
   };
 
   const handleRegister = async (userInfo) => {
     try {
-      // Your registration logic here using 'userInfo'
       console.log('Registration details:', userInfo);
-
-      // Set the registration success state to true
       setRegistrationSuccess(true);
-
-      // Close the register modal after successful registration
       closeRegisterModal();
     } catch (error) {
       console.error('Error during registration:', error.message);
-      // Handle error (display error message, etc.)
+    } finally {
+      setTimeout(() => {
+        setRegistrationSuccess(false);
+      }, 3000);
     }
   };
 
@@ -56,10 +69,17 @@ const Home = () => {
     <div>
       <div className="header-container">
         <h2 className="m-3">Airbnb Copy Pasta</h2>
-        {auth.currentUser ? (
-          <button className="btn btn-danger mt-3" onClick={handleLogout}>
-            Logout
-          </button>
+        {user ? (
+          <div className="text-right">
+            <button className="btn btn-danger mt-3 me-2" onClick={handleLogout}>
+              Logout
+            </button>
+            <Link to="/add-hotel">
+              <button className="btn btn-primary mt-3 me-2">
+                Add Hotel
+              </button>
+            </Link>
+          </div>
         ) : (
           <div className="text-right">
             <button className="btn btn-primary mt-3 me-2" onClick={openLoginModal}>

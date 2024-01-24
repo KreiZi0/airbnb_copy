@@ -10,12 +10,14 @@ const firebaseConfig = {
   storageBucket: "airbnbcopy-d9e4a.appspot.com",
   messagingSenderId: "377975085437",
   appId: "1:377975085437:web:e7b842e09af3dfe5189414",
-  databaseURL: "https://airbnbcopy-d9e4a-default-rtdb.europe-west1.firebasedatabase.app"
+  databaseURL: "https://airbnbcopy-d9e4a-default-rtdb.europe-west1.firebasedatabase.app",
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app); // Use getDatabase instead of getAuth
 
-export { auth, database };
+// Get the authentication and database objects
+const auth = getAuth(app);
+const database = getDatabase(app);
+
+export { auth, database};

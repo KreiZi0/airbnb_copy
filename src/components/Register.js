@@ -1,3 +1,4 @@
+// Register.js
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { ref, set } from 'firebase/database';
@@ -17,25 +18,23 @@ const Register = ({ onClose }) => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-  
+  const handleSubmit = async () => {
     try {
       setLoading(true);
-  
+
       // Create user with email and password
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  
+
       // Get the user's UID (unique identifier)
       const userId = userCredential.user.uid;
-  
+
       // Store additional user information in the database
       const userRef = ref(database, `users/${userId}`);
       await set(userRef, {
         email,
         // Add other user data as needed
       });
-  
+
       // Close the modal after successful registration
       onClose();
     } catch (error) {
@@ -51,7 +50,6 @@ const Register = ({ onClose }) => {
       setLoading(false);
     }
   };
-  
 
   return (
     <div>
@@ -76,7 +74,7 @@ const Register = ({ onClose }) => {
           className="form-control mb-2"
         />
 
-        <button type="submit" className="btn btn-primary me-2" disabled={loading}>
+        <button type="button" onClick={handleSubmit} className="btn btn-primary me-2" disabled={loading}>
           {loading ? 'Submitting...' : 'Submit'}
         </button>
         <button type="button" onClick={onClose} className="btn btn-secondary">
