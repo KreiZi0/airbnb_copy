@@ -1,8 +1,9 @@
+//Home.js
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Login from '../components/Login';
 import Register from '../components/Register';
-import { auth } from '../firebase';
+import { auth, database } from '../firebase';
 import '../styles/Home.css';
 
 const Home = () => {
@@ -13,7 +14,7 @@ const Home = () => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
+      setUser(user); 
     });
 
     // Cleanup the listener on component unmount
@@ -36,8 +37,8 @@ const Home = () => {
     setRegisterModalOpen(false);
   };
 
-  const handleLogin = (credentials) => {
-    console.log('Login credentials:', credentials);
+  const handleLogin = (userInfo) => {
+    console.log('Login credentials:', userInfo);
   };
 
   const handleLogout = () => {
@@ -97,7 +98,7 @@ const Home = () => {
       {isLoginModalOpen && (
         <div className="modal-overlay" onClick={closeLoginModal}>
           <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-            <Login onClose={closeLoginModal} onLogin={handleLogin} />
+            <Login onClose={closeLoginModal} onLogin={handleLogin} auth={auth} database={database} />
           </div>
         </div>
       )}

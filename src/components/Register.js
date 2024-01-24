@@ -37,6 +37,9 @@ const Register = ({ onClose }) => {
 
       // Close the modal after successful registration
       onClose();
+
+      // Log success message to the console
+      console.log('Registration successful!');
     } catch (error) {
       console.error('Error during registration:', error.message);
       if (error.code === 'auth/email-already-in-use') {
@@ -53,7 +56,7 @@ const Register = ({ onClose }) => {
 
   return (
     <div>
-      <h3>Register</h3>
+      <h3>Signup</h3>
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <label htmlFor="email">Email:</label>
@@ -75,7 +78,7 @@ const Register = ({ onClose }) => {
         />
 
         <button type="button" onClick={handleSubmit} className="btn btn-primary me-2" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? 'Registering...' : 'Submit'}
         </button>
         <button type="button" onClick={onClose} className="btn btn-secondary">
           Cancel
