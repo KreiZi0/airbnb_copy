@@ -42,3 +42,51 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
+
+
+  
+.hotel-box {
+  border: 1px solid #ccc; /* Add border around the box */
+  padding: 10px; /* Add padding inside the box */
+  margin-bottom: 20px; /* Add margin to separate each hotel box */
+  border-radius: 5px; /* Add rounded corners to the box */
+}
+
+ul {
+  list-style-type: none;
+}
+/* Home.css */
+.hotel-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.hotel-box {
+  width: 300px; /* Adjust the width as needed */
+  padding: 20px;
+  margin: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Adjustments for smaller screens */
+@media (max-width: 768px) {
+  .hotel-box {
+    width: calc(50% - 20px); /* Adjust as needed */
+  }
+}
+
+/* Adjustments for even smaller screens */
+@media (max-width: 576px) {
+  .hotel-box {
+    width: calc(100% - 20px); /* Adjust as needed */
+  }
+}
+
+/* Even distribution for four hotels */
+@media (min-width: 992px) {
+  .hotel-box {
+    width: calc(25% - 20px); /* Adjust as needed */
+  }
+}

@@ -1,12 +1,15 @@
+// AddHotel.js
 import React, { useState } from 'react';
-import { ref, set } from 'firebase/database';
-import { database } from '../firebase';
+import { ref, push } from 'firebase/database';
+import { database, auth } from '../firebase';
 import '../styles/AddHotel.css';
 
 const AddHotel = () => {
   const [hotelName, setHotelName] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const clearFormFields = () => {
     setHotelName('');
@@ -16,30 +19,47 @@ const AddHotel = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    if (!hotelName) {
+      setError('Please enter the hotel name.');
+      return;
+    }
+  
+    const user = auth.currentUser;
+    if (!user) {
+      console.error('User is not logged in.');
+      return;
+    }
+  
     const hotelsRef = ref(database, 'hotels');
-
+  
     try {
+      setLoading(true);
+  
       const newHotel = {
         name: hotelName,
         address: address,
         description: description,
+        userId: user.uid // Associate hotel with user
       };
-
-      await set(hotelsRef, newHotel);
-
-      // Clear the form fields after successful submission
+  
+      await push(hotelsRef, newHotel);
+  
       clearFormFields();
-
+      setError(''); // Clear error message on successful hotel addition
       console.log('Hotel added successfully!');
     } catch (error) {
       console.error('Error adding hotel:', error.message);
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <div>
-      <h3 class="header" >Add Hotel</h3>
+      <h3 className="header text-center">Add Hotel</h3>
+      {error && <div className="alert alert-danger">{error}</div>}
       <form className="add-hotel-container" onSubmit={handleSubmit}>
         <label htmlFor="hotelName">Hotel Name:</label>
         <input
@@ -67,8 +87,8 @@ const AddHotel = () => {
           className="form-control mb-2"
         ></textarea>
 
-        <button type="submit" className="btn btn-primary me-2">
-          Add Hotel
+        <button type="submit" className="btn btn-primary me-2" disabled={loading}>
+          {loading ? 'Adding Hotel...' : 'Add Hotel'}
         </button>
       </form>
     </div>
